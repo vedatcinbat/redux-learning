@@ -243,7 +243,46 @@ const remoevTaskAction = {
     }
 }
 
-3. Creating the Reducer function
+
+* Folder Structure
+<src>
+ <store>
+  - store.js
+  - action.js
+  - reducer.js
+  - actionTypes.js
+
+
+--> 
+<src>
+ <store>
+  - store.js
+  <tasks> -- SLICE
+    - action.js
+    - reducer.js
+    - actionTypes.js
+  <employees> -- SLICE
+    - action.js
+    - reducer.js
+    - actionTypes.js
+
+* Duck Module Approach
+<src>
+ <store>
+  - store.js
+  - task.js
+  - employees.js
+
+* Implementing Duck Module Approach
+
+
+
+
+
+
+
+
+
 
 
 

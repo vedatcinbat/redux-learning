@@ -1,25 +1,27 @@
-import * as actionTypes from './actionTypes';
+// ActionTypes
+export const ADD_TASK = "ADD_TASK";
+export const REMOVE_TASK = "REMOVE_TASK";
+export const COMPLETE_TASK = "COMPLETE_TASK";
 
+// Action Creators
+export const addTask = (task) => {
+    return {type: ADD_TASK, payload: {task: task}}
+}
+
+export const removeTask = (id) => {
+    return {type: REMOVE_TASK, payload: {id: id}}
+}
+
+export const completeTask = (id) => {
+    return {type: COMPLETE_TASK, payload: {id: id}}
+}
+
+// Reducer
 let id = 0;
 
 export default function reducer(state = [], action) {
-    /* if(action.type === "ADD_TASK") {
-        return [
-            ...state,
-            {
-                id: ++id,
-                task: action.payload.task,
-                completed: false
-            }
-        ]
-    }else if(action.type === "TOGGLE_TASK") {
-        return state.filter(task => task.id !== action.payload.id);
-    }
-
-    return state; */
-
     switch (action.type) {
-        case actionTypes.ADD_TASK:
+        case ADD_TASK:
             return [
                 ...state,
                 {
@@ -28,10 +30,10 @@ export default function reducer(state = [], action) {
                     completed: false
                 }
             ]
-        case actionTypes.REMOVE_TASK:
+        case REMOVE_TASK:
             return state.filter(task => task.id !== action.payload.id);
 
-        case actionTypes.COMPLETE_TASK:
+        case COMPLETE_TASK:
             return state.map(task => {
                 if(task.id === action.payload.id) {
                     return {

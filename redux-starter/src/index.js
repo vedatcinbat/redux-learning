@@ -167,8 +167,8 @@ const newBookArr = arrayOfBooks.map(book => book === "Book2" ? "Book4" : book);
 console.log(arrayOfBooks);
 console.log(newBookArr); */
 
-import store from './store';
-import {addTask, removeTask, completeTask} from './actions';
+import store from './store/configureStore';
+import {addTask, removeTask, completeTask} from './store/tasks';
 
 /* store.dispatch({
     type: "ADD_TASK",
