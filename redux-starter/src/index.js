@@ -139,7 +139,7 @@ console.log(removed);
 // Dont help me with the code, I will try to solve it myself
 // Exercise: Immutability in Arrays
 
-const book = {
+/* const book = {
     author: 'Robert Kiyosaki',
     book: {
         name: 'Rich Dad Poor Dad',
@@ -148,11 +148,11 @@ const book = {
     }
 }
 
-const arrayOfBooks = ["Book1", "Book2", "Book3"];
+const arrayOfBooks = ["Book1", "Book2", "Book3"]; */
 
 // Change price to 10$ and rating to 4.8
 
-const newBook = produce(book, draft => {
+/* const newBook = produce(book, draft => {
     draft.book.price = "10$";
     draft.book.rating = 4.8;
 })
@@ -165,4 +165,39 @@ console.log(newBook);
 const newBookArr = arrayOfBooks.map(book => book === "Book2" ? "Book4" : book);
 
 console.log(arrayOfBooks);
-console.log(newBookArr);
+console.log(newBookArr); */
+
+import store from './store';
+import {addTask, removeTask} from './actions';
+
+/* store.dispatch({
+    type: "ADD_TASK",
+    payload: {
+        task: "Learn Redux"
+    }
+})
+
+console.log(store.getState());
+
+store.dispatch({
+    type: "REMOVE_TASK",
+    payload: {
+        id: 1
+    }
+})
+
+console.log(store.getState()); */
+
+const unsubscribe = store.subscribe(() => {
+    console.log("Updated", store.getState());
+})
+
+store.dispatch(addTask("Task 1"));
+store.dispatch(addTask("Task 2"));
+
+console.log(store.getState());
+
+unsubscribe();
+
+store.dispatch(removeTask(1));
+console.log(store.getState());
