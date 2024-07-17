@@ -122,3 +122,59 @@ redux-ts-example/
 
 
 ------------------------------------------------------------------------
+
+
+
+### Udemy Course: Ultimate Redux Course ##############################################
+* What is Redux ?
+-> Redux is a "state management" library for JavaScript applications
+-> In other words, redux is used to manage data or state of "complex JavaScript applications"
+-> You can you Redux with React, Angular, Vue, JavaScript
+-> Centralize application's state
+-> Data-flow transparent
+-> Easily debug applications
+-> Preserve the page state
+
+
+* When we need Redux ?
+-> Comples User interfaces in terms of data like facebook, amazon
+-> Data flow is complex
+
+---> When we dont use Redux
+-> Small or medium size of applications
+-> Simple UI & static data
+
+
+* Setting up developmnet Environment
+-> Webpack: is the bundler for bundle our JavaScript code in one file and then link with our browser
+-> In simple words, we can write our JavaScript code in multiple files with using webpack
+
+
+* What is Functional Programming ?
+-> is one of the type of programming paradigms
+-> Programming paradigms are the "methods" or we can say a set of rules to structure our code and to solve a problem
+-> Procedural | Logical | Functional | Object-Oriented Programming
+
+function greeting() {
+    return function() {
+        return 'Good Morning';
+    }
+}
+
+let anFunction = greeting();
+let message = anFunction();
+
+console.log(message);
+
+//let message = greeting;
+
+/* function printMessage(anFunction) {
+    console.log(anFunction());
+}
+
+printMessage(message); */
+
+* What is Pure Functions ?
+Pure function is a function which always give same output if we give it the same input
+
+######################################################################################
