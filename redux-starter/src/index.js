@@ -168,7 +168,7 @@ console.log(arrayOfBooks);
 console.log(newBookArr); */
 
 import store from './store/configureStore';
-import {addTask, removeTask, completeTask} from './store/tasks';
+import {addTask, removeTask, completeTask, fetchTodo} from './store/tasks';
 
 /* store.dispatch({
     type: "ADD_TASK",
@@ -197,10 +197,15 @@ store.dispatch(addTask("Task 2"));
 
 console.log(store.getState());
 
-unsubscribe();
+//unsubscribe();
 
-store.dispatch(removeTask(1));
-console.log(store.getState());
+/* store.dispatch(removeTask(1));
+console.log(store.getState()); */
 
 store.dispatch(completeTask(2));
+
+console.log(store.getState());
+
+store.dispatch(fetchTodo());
+
 console.log(store.getState());
