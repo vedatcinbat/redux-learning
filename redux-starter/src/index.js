@@ -168,7 +168,7 @@ console.log(arrayOfBooks);
 console.log(newBookArr); */
 
 import store from './store';
-import {addTask, removeTask} from './actions';
+import {addTask, removeTask, completeTask} from './actions';
 
 /* store.dispatch({
     type: "ADD_TASK",
@@ -200,4 +200,7 @@ console.log(store.getState());
 unsubscribe();
 
 store.dispatch(removeTask(1));
+console.log(store.getState());
+
+store.dispatch(completeTask(2));
 console.log(store.getState());
