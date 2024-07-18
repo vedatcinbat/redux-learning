@@ -415,6 +415,154 @@ export const fetchTodo = () => async (dispatch, getState) => {
 
 
 
+**********************************************************************************
+* What is Redux-Toolkit ?
+-> Redux-Toolkit is library that simplifies redux
+
+> npm i @reduxjs/toolkit
+
+* Configure Store with toolkit
+import { configureStore } from "@reduxjs/toolkit"
+import reducer from './tasks';
+
+
+const store = configureStore({reducer});
+
+
+* Defining Actions - createAction
+import { createAction } from "@reduxjs/toolkit"
+
+export const ADD_TASK = "ADD_TASK";
+export const REMOVE_TASK = "REMOVE_TASK";
+export const COMPLETE_TASK = "COMPLETE_TASK";
+
+// Action Creators
+export const addTask = createAction("ADD_TASK")
+export const removeTask = createAction("REMOVE_TASK")
+export const completeTask = createAction("TASK_COMPLETED")
+
+
+* Defining Reducers - createReducer
+export default createReducer([], {
+    [addTask.type]: (state, action) => {
+        state.push({
+            id: ++id,
+            task: action.payload.task,
+            completed: false
+        })
+    },
+    [removeTask.type]: (state, action) => {
+        return state.filter(task => task.id !== action.payload.id);
+    },
+    [completeTask.type]: (state, action) => {
+        return state.map(task => {
+            if (task.id === action.payload.id) {
+                return {
+                    ...task,
+                    completed: !task.completed
+                }
+            }
+            return task;
+        })
+    }
+})
+
+* Creating slices with Redux-toolkit - createSlice
+import { createSlice } from ...
+
+const taskSlice = createSlice({
+    name: "tasks",
+    initialState: [],
+    reducers: {
+        addTask: (state, action) => {
+            state.push({
+                id: ++id,
+                task: action.payload.task,
+                completed: false
+            })
+        },
+        removeTask: (state, action) => {
+            return state.filter(task => task.id !== action.payload.id);
+        },
+        completeTask: (state, action) => {
+            return state.map(task => {
+                if (task.id === action.payload.id) {
+                    return {
+                        ...task,
+                        completed: !task.completed
+                    }
+                }
+                return task;
+            })
+        }
+    }
+})
+
+export const {addTask, removeTask, completeTask} = taskSlice.actions;
+export default taskSlice.reducer;
+
+
+* Exercise
+- employee.js
+import {createSlice} from "@reduxjs/toolkit";
+let id = 0;
+const employeeSlice = createSlice({
+    name: 'employees',
+    initialState: [],
+    reducers: {
+        addEmployee(state, action) {
+            state.push({
+                id: ++id,
+                employeeName: action.payload.name
+            })
+        }
+    }
+})
+
+export const {addEmployee} = employeeSlice.actions;
+
+export default employeeSlice.reducer;
+
+
+- configureStore.js
+*import reducer from "./employee";
+
+
+- index.js
+store.dispatch(addEmployee({name: 'Vedat'}));
+store.dispatch(addEmployee({name: 'John'}))
+console.log(store.getState())
+
+
+* Combining Reducers using Redux-toolkit
+import employeeReducer from './employees';
+import taskReducer from "./tasks"
+
+const store = configureStore({
+    reducer: {
+        tasks: taskReducer,
+        employees: employeeReducer
+    }
+})
+
+export default store;
+
+
+* Middleware in Redux 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

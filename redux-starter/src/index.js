@@ -169,6 +169,7 @@ console.log(newBookArr); */
 
 import store from './store/configureStore';
 import {addTask, removeTask, completeTask, fetchTodo} from './store/tasks';
+import { addEmployee } from './store/employees';
 
 /* store.dispatch({
     type: "ADD_TASK",
@@ -188,24 +189,34 @@ store.dispatch({
 
 console.log(store.getState()); */
 
-const unsubscribe = store.subscribe(() => {
+/* const unsubscribe = store.subscribe(() => {
     console.log("Updated", store.getState());
 })
 
-store.dispatch(addTask("Task 1"));
-store.dispatch(addTask("Task 2"));
+store.dispatch(addTask({task: "Task 1"}));
+store.dispatch(addTask({task: "Task 2"}));
 
-console.log(store.getState());
+console.log(store.getState()); */
 
 //unsubscribe();
 
 /* store.dispatch(removeTask(1));
 console.log(store.getState()); */
 
-store.dispatch(completeTask(2));
+/* store.dispatch(completeTask({id: 2}));
 
-console.log(store.getState());
+console.log(store.getState()); */
 
-store.dispatch(fetchTodo());
+/* store.dispatch(fetchTodo());
 
-console.log(store.getState());
+console.log(store.getState()); */
+/* 
+store.dispatch(removeTask({id: 1}));
+
+console.log(store.getState()); */
+
+// Add Employee
+
+store.dispatch(addEmployee({name: 'Vedat'}));
+store.dispatch(addEmployee({name: 'John'}))
+console.log(store.getState())

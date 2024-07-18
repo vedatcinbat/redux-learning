@@ -1,7 +1,17 @@
-import { legacy_createStore as createStore, applyMiddleware} from 'redux';
-import {thunk} from 'redux-thunk';
-import reducer from './tasks';
+import { configureStore } from '@reduxjs/toolkit';
+import employeeReducer from './employees';
+import taskReducer from "./tasks"
+//import employeeReducer from "./employees";
 
-const store = createStore(reducer, applyMiddleware(thunk));
+/* const store = createStore(reducer, 
+    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+); */
+
+const store = configureStore({
+    reducer: {
+        tasks: taskReducer,
+        employees: employeeReducer
+    }
+})
 
 export default store;
