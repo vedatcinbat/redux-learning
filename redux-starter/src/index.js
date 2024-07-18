@@ -1,5 +1,5 @@
-import {compose, pipe} from 'lodash/fp';
-import {produce} from 'immer';
+/* import {compose, pipe} from 'lodash/fp';
+import {produce} from 'immer'; */
 /* function greeting() {
     return function() {
         return 'Good Morning';
@@ -167,9 +167,9 @@ const newBookArr = arrayOfBooks.map(book => book === "Book2" ? "Book4" : book);
 console.log(arrayOfBooks);
 console.log(newBookArr); */
 
-import store from './store/configureStore';
+/* import store from './store/configureStore';
 import {addTask, removeTask, completeTask, fetchTodo} from './store/tasks';
-import { addEmployee } from './store/employees';
+import { addEmployee } from './store/employees'; */
 
 /* store.dispatch({
     type: "ADD_TASK",
@@ -217,8 +217,51 @@ console.log(store.getState()); */
 
 // Add Employee
 
-store.dispatch(addEmployee({name: 'Vedat'}));
+/* store.dispatch(addEmployee({name: 'Vedat'}));
 store.dispatch(addEmployee({name: 'John'}))
 store.dispatch({type: 'SHOW_ERROR', payload: {error: 'USER NOT FOUND'}})
 
-console.log(store.getState())
+console.log(store.getState()) */
+
+
+import store from './store/configureStore';
+import { getTasks, addTask, removeTask, completeTask } from './store/tasks';
+import { addEmployee } from './store/employees';
+import axios from 'axios';
+import { fetchTasks } from './store/tasks';
+import { apiCallBegan } from './store/api';
+import { loadTasks, addNewTask, updateTaskCompleted, deleteTask } from './store/tasks';
+
+//store.dispatch(fetchTasks());
+
+// API Middleware
+store.dispatch(loadTasks())
+//store.dispatch(addNewTask({task: "Learn Redux"}))
+store.dispatch(updateTaskCompleted(3, true))
+//store.dispatch(deleteTask(6))
+store.dispatch(loadTasks());
+
+
+/* store.dispatch({
+    type: 'apiRequest',
+    payload: {
+        url: '/tasks',
+        onStart: 'tasks/apiRequested',
+        onSuccess: 'tasks/getTasks',
+        onError: 'tasks/apiRequestFailed'
+    }
+}) */
+
+/* const gettingTasks = async () => {
+    try {
+        // calling api
+        const response = await axios.get('http://localhost:5000/api/tasks');
+        console.log(response);
+        // dispatch action
+        store.dispatch(getTasks({ tasks: response.data }));
+    }catch(error) {
+        store.dispatch({type: 'SHOW_ERROR', payload: {error: error.message}});
+    }
+}
+
+gettingTasks(); */

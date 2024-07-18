@@ -1,38 +1,99 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "../utils/http";
+import { apiCallBegan } from "./api";
+
 let id = 0;
+const initialState = {
+    tasks: [],
+    loading: false,
+    error: null
+}
+
+/* export const fetchTasks = createAsyncThunk('fetchTasks', async () => {
+    try {
+        const response = await axios.get("/tasks");
+        return {
+            tasks: response.data
+        }
+    } catch (error) {
+        return rejectWithValue({ error: error.message })
+    }
+}) */
 
 const taskSlice = createSlice({
     name: "tasks",
-    initialState: [],
+    initialState,
     reducers: {
+        apiRequested: (state, action) => {
+            state.loading = true;
+        },
+        apiRequestFailed: (state, action) => {
+            state.loading = false;
+        },
+        getTasks: (state, action) => {
+            state.tasks = action.payload;
+            state.loading = false;
+        },
         addTask: (state, action) => {
-            state.push({
-                id: ++id,
-                task: action.payload.task,
-                completed: false
-            })
+            state.tasks.push(action.payload);
         },
         removeTask: (state, action) => {
-            return state.filter(task => task.id !== action.payload.id);
+            state.tasks = state.tasks.filter(task => task.id !== action.payload.id);
         },
         completeTask: (state, action) => {
-            return state.map(task => {
-                if (task.id === action.payload.id) {
-                    return {
-                        ...task,
-                        completed: !task.completed
-                    }
-                }
-                return task;
-            })
+            const task = state.tasks.find(task => task.id === action.payload.id);
+            if(!task) return;
+            task.completed = action.payload.completed;
         }
-    }
+    },
+    /* extraReducers: (builder) => {
+        builder
+            .addCase(fetchTasks.pending, (state, action) => {
+                state.loading = true;
+            })
+            .addCase(fetchTasks.fulfilled, (state, action) => {
+                state.tasks = action.payload.tasks;
+                state.loading = false;
+            })
+            .addCase(fetchTasks.rejected, (state, action) => {
+                state.error = action.error.message;
+                state.loading = false;
+            })
+    } */
 })
 
-export const {addTask, removeTask, completeTask} = taskSlice.actions;
+export const { apiRequested, apiRequestFailed, getTasks, addTask, removeTask, completeTask } = taskSlice.actions;
 export default taskSlice.reducer;
 
+// Action Creators
+const url = "/tasks";
 
+export const loadTasks = () => apiCallBegan({
+    url,
+    onStart: apiRequested.type,
+    onSuccess: getTasks.type,
+    onError: apiRequestFailed.type
+})
+
+export const addNewTask = (task) => apiCallBegan({
+    url,
+    method: "POST",
+    data: task,
+    onSuccess: addTask.type,
+})
+
+export const updateTaskCompleted = (id, completed) => apiCallBegan({
+    url: `${url}/${id}`,
+    method: 'PATCH',
+    data: {completed},
+    onSuccess: completeTask.type
+})
+
+export const deleteTask = (id) => apiCallBegan({
+    url: `${url}/${id}`,
+    method: 'DELETE',
+    onSuccess: removeTask.type
+})
 
 // ActionTypes
 /* export const ADD_TASK = "ADD_TASK";

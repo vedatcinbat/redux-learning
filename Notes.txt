@@ -587,6 +587,283 @@ next state {tasks: Array(0), employees: Array(1)}
 
 
 
+* Calling API with Redux
+- Functions
+- AsyncThunk
+- Middleware
+-> Choice is yours
+
+* Set up the backend API
+- package.json
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.1"
+  }
+}
+
+> npm install
+
+- server.js
+const express = require("express");
+const cors = require("cors");
+const app = express();
+
+app.use(express.json());
+app.use(cors());
+
+let tasks = [
+    { id: 1, task: "Start creating Redux application", completed: true },
+    { id: 2, task: "Design redux store", completed: true },
+    { id: 3, task: "Define all actions list", completed: false },
+    { id: 4, task: "Create reducer", completed: false },
+    { id: 5, task: "Create store using reducer", completed: false },
+];
+
+// Get all tasks
+app.get("/api/tasks", (req, res) => {
+    res.json(tasks);
+});
+
+// Add new Task
+app.post("/api/tasks", (req, res) => {
+    const newTask = { id: tasks.length + 1, ...req.body, completed: false };
+    tasks.push(newTask);
+
+    console.log(tasks);
+    res.json(newTask);
+});
+
+// Change task completed property
+app.patch("/api/tasks/:id", (req, res) => {
+    const id = parseInt(req.params.id);
+    const index = tasks.findIndex((task) => task.id === id);
+    const task = tasks[index];
+    task.completed = req.body.completed;
+
+    res.json(task);
+});
+
+// Delete Specific task
+app.delete("/api/tasks/:id", (req, res) => {
+    const id = parseInt(req.params.id);
+    tasks = tasks.filter((task) => task.id !== id);
+
+    res.json({ id });
+});
+
+app.listen(5000, () => {
+    console.log("Server running on port 5000")
+});
+
+> node server.js
+-> Now there is backend express application with endpoints GET POST PATCH DELETE /api/tasks
+
+
+* Making API calls using functions
+const gettingTasks = async () => {
+    try {
+        // calling api
+        const response = await axios.get('http://localhost:5000/api/tasks');
+        console.log(response);
+        // dispatch action
+        store.dispatch(getTasks({ tasks: response.data }));
+    }catch(error) {
+        store.dispatch({type: 'SHOW_ERROR', payload: {error: error.message}});
+    }
+}
+
+gettingTasks();
+
+- tasks.ts
+reducers: {
+        getTasks: (state, action) => {
+            return action.payload.tasks;
+        }
+
+
+* CreateAsyncThunk Method
+import {createAsyncThunk} from "@redux-toolkit"
+
+export const fetchTasks = createAsyncThunk(
+    "fetchTasks",
+    async () => {
+        const response = axios.get('http://localhost:5000/api/tasks');
+        return {
+            tasks: response.data;
+        }
+    }
+)
+
+- index.js
+import { fetchTasks } from './store/tasks';
+
+store.dispatch(fetchTasks())
+
+
+createAsyncThunk
+1. Pending 2. Fulfilled 3. Rejected
+
+const initialState = {
+    tasks: [],
+    loading: false,
+    error: null
+}
+
+export const fetchTasks = createAsyncThunk('fetchTasks', async () => {
+    try {
+        const response = await axios.get("http://localhost:5000/api/tasks");
+        return {
+            tasks: response.data
+        }
+    } catch (error) {
+        return rejectWithValue({ error: error.message })
+    }
+})
+
+
+const taskSlice = createSlice({
+    ...,
+    extraReducers: (builder) => {
+        builder
+            .addCase(fetchTasks.pending, (state, action) => {
+                state.loading = true;
+            })
+            .addCase(fetchTasks.fulfilled, (state, action) => {
+                state.tasks = action.payload.tasks;
+                state.loading = false;
+            })
+            .addCase(fetchTasks.rejected, (state, action) => {
+                state.error = action.error.message;
+                state.loading = false;
+            })
+    }
+})
+
+
+
+* Defining BaseURL for axios
+- utils>http.js
+import axios from 'axios';
+
+const instance = axios.create({
+    baseURL: 'http://localhost:5000/api'
+})
+
+export default instance;
+
+- tasks.js
+import axios from "../utils/http"
+
+....
+
+const response = axios.get("/tasks");
+--> axios.get("http://localhost:5000/api+/tasks");
+
+
+
+* Creating Custom Middleware for API calls
+const api = ({dispatch}) => next => async action => {
+    if(action.type !== 'apiRequest') {
+        return next(action);
+    }
+
+    const {url, method, data, onSuccess, onError} = action.payload;
+
+    try{
+        const response = await axios.request({
+            baseURL: 'http://localhost:5000/api',
+            url,
+            method,
+            data
+        });
+    
+        dispatch({type: onSuccess, payload: response.data});
+    }catch(error) {
+        dispatch({type: onError, payload: error.message});
+    }
+}
+export default api;
+
+
+
+- taks.js
+getTasks: (state, action) => {
+            state.tasks = *action.payload;
+        },
+
+- index.js
+
+store.dispatch({
+    type: 'apiRequest',
+    payload: {
+        url: '/tasks',
+        onSuccess: 'tasks/getTasks',
+        onError: 'tasks/showError'
+    }
+})
+
+- tasks.js
+        apiRequested: (state, action) => {
+            state.loading = true;
+        },
+        apiRequestFailed: (state, action) => {
+            state.loading = false;
+        },
+- index.js
+store.dispatch({
+    type: 'apiRequest',
+    payload: {
+        url: '/tasks',
+        onStart: 'tasks/apiRequested',
+        onSuccess: 'tasks/getTasks',
+        onError: 'tasks/apiRequestFailed'
+    }
+})
+
+- api.js
+const api = ({dispatch}) => next => async action => {
+    if(action.type !== 'apiRequest') {
+        return next(action);
+    }
+
+    const {url, method, data, onStart, onSuccess, onError} = action.payload;
+
+    if(onStart) dispatch({type: onStart});
+
+    try{
+        const response = await axios.request({
+            baseURL: 'http://localhost:5000/api',
+            url,
+            method,
+            data
+        });
+    
+        dispatch({type: onSuccess, payload: response.data});
+    }catch(error) {
+        dispatch({type: onError, payload: error.message});
+        dispatch({type: "SHOW_ERROR", payload: error.message});
+    }
+}
+
+* Creating ActionCreators
+
+
+
+
+
+
+
 
 
 
