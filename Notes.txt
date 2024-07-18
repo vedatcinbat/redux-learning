@@ -856,21 +856,14 @@ const api = ({dispatch}) => next => async action => {
     }
 }
 
-* Creating ActionCreators
 
 
+*** Integrating Redux with React Application
+> npx create-react-app todo-app 
+> cd todo-app
+> npm start
 
-
-
-
-
-
-
-
-
-
-
-
-
+* Adding redux in react application
+> npm i redux @reduxjs/toolkit axios
 
 ######################################################################################
