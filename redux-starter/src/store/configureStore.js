@@ -1,17 +1,21 @@
 import { configureStore } from '@reduxjs/toolkit';
 import employeeReducer from './employees';
 import taskReducer from "./tasks"
-//import employeeReducer from "./employees";
+//import log from "../middleware/log"
+import logger from "redux-logger";
+import error from "../middleware/error"
 
-/* const store = createStore(reducer, 
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-); */
 
 const store = configureStore({
     reducer: {
         tasks: taskReducer,
         employees: employeeReducer
-    }
+    },
+    middleware: (getDefaultMiddleware) => [
+        ...getDefaultMiddleware(), 
+        logger, 
+        error
+    ]
 })
 
 export default store;

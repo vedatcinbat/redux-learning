@@ -549,11 +549,41 @@ export default store;
 
 
 * Middleware in Redux 
+-> Middleware is a function which run between the action and reducer
+
+* How to create own middleware ?
+- log.js
+const log = store => next => action => {
+    console.log(action);
+    next(action);
+}
+
+export default log;
+
+- configureStore.js
+import log from "../middleware/log"
 
 
+const store = createStore({
+    reducer: {
+        tasks: taskReducer,
+        employees: employeeReducer
+    },
+    middleware: (getDefaultMiddleware) => [...getDefaultMiddleware(), log]
+})
 
+* Library For Logging: Redux-Logger
+> npm i redux-logger
 
+import logger from "redux-logger"
 
+.....
+    middleware: (getDefaultMiddleware) => [...getDefaultMiddleware(), logger];
+
+action employees/addEmployee @ 15:51:32.702
+prev state {tasks: Array(0), employees: Array(0)}employees: []tasks: [][[Prototype]]: Object
+action     {type: 'employees/addEmployee', payload: {…}}payload: {name: 'Vedat'}name: "Vedat"[[Prototype]]: Objecttype: "employees/addEmployee"[[Prototype]]: Object
+next state {tasks: Array(0), employees: Array(1)}
 
 
 

@@ -219,4 +219,6 @@ console.log(store.getState()); */
 
 store.dispatch(addEmployee({name: 'Vedat'}));
 store.dispatch(addEmployee({name: 'John'}))
+store.dispatch({type: 'SHOW_ERROR', payload: {error: 'USER NOT FOUND'}})
+
 console.log(store.getState())
